@@ -1,0 +1,59 @@
+i want you to code my FAstAPI that use GCP for a personnal trading jourbal, bellow  all the information, if i missed something tell me,  the for beginning no auth : 
+
+- also explain how you ll handle the python code file name
+- i dont use "service-account-file.json" because my email  as owner privilege
+
+/trades
+  - POST /{asset}/{week_start_date} (Create a new trade entry in Firestore for a specific asset and the start date of the week.)
+  - GET /{asset}/{week_start_date} (Retrieve a list of all trade entries for a specific asset and the start date of the week in Firestore.)
+  - GET /{asset}/{week_start_date}/{trade_id} (Retrieve the details of a specific trade entry by its ID for a specific asset and the start date of the week in Firestore. You will get the trade_id from the list retrieved in the previous endpoint.)
+  - PUT /{asset}/{week_start_date}/{trade_id} (Update an existing trade entry by its ID for a specific asset and the start date of the week in Firestore.)
+  - DELETE /{asset}/{week_start_date}/{trade_id} (Delete a specific trade entry by its ID for a specific asset and the start date of the week in Firestore.)
+
+/notes
+  - POST /{asset} (Create a new note in cloud storage for a specific asset.)
+  - GET /{asset} (Retrieve a list of all notes for a specific asset.)
+  - GET /{note_id} (Retrieve the details of a specific note by its ID.)
+  - PUT /{note_id} (Update an existing note by its ID.)
+  - DELETE /{note_id} (Delete a specific note by its ID.)
+
+/search
+  - GET /trades (Perform a wide search across all trades based on query parameters.)
+  - GET /notes (Perform a wide search across all notes based on query parameters.)
+
+/health
+  - GET / (Return a simple status message indicating that the API is up and running.)
+
+
+GCP info : 
+project number : 750231566894
+Project ID: halogen-segment-241921 
+cloud storage :
+- name : fin-histobucket
+- Location : us (multiple regions in United States)
+- Storage class :Standard
+
+firestore : 
+- Database ID : (default)	
+- Location : us-central1
+
+firestore architecture :
+BTCUSD (collection)
+  └─ 2023-07-11 (document)
+       └─ trades (subcollection)
+            ├─ trade1 (document, with timestamp and other trade details)
+            ├─ trade2 (document, with timestamp and other trade details)
+ETHUSD (collection)
+  └─ 2023-07-11 (document)
+       └─ trades (subcollection)
+            ├─ trade1 (document, with timestamp and other trade details)
+            ├─ trade2 (document, with timestamp and other trade details)
+
+trade details if firestore : tradedate, entry_price,exit_price, quantity, ratio , TP, SL, result(win or loss) notes  
+
+
+
+Additional Considerations : 
+- Error Handling: Ensure that your API handles errors gracefully and provides meaningful error messages for different failure scenarios (e.g., trade not found, invalid input).
+- Validation: Validate the input data for each route to ensure that only valid data is stored in Firestore.
+- Metadata: Consider including metadata in your responses, such as the total number of trades or notes, to support UI features like showing the total count.
