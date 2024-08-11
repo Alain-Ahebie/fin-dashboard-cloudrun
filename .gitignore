@@ -2,3 +2,6 @@
 .terragrunt-cache/
 cloudfin
 __pycache__/
+cloudmc/
+halogen/
+credentials/

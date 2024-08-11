@@ -3,14 +3,16 @@ from typing import Optional, List
 from datetime import datetime
 
 class Trade(BaseModel):
+    document_id: Optional[str] = None
+    type: Optional[str] = None  
     tradedate: Optional[datetime] = None
     entry_price: Optional[float] = Field(None, gt=0)
     exit_price: Optional[float] = Field(None, gt=0)
     quantity: Optional[int] = Field(None, gt=0)
-    ratio: Optional[float] = None
     TP: Optional[float] = None
     SL: Optional[float] = None
-    result: Optional[str] = None
+    ratio: Optional[float] = None  
+    profit: Optional[float] = None  
     notes: Optional[str] = None
 
 class NoteUpload(BaseModel):

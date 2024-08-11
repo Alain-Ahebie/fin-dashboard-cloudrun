@@ -1,5 +1,9 @@
+import os
 from fastapi import FastAPI
 from routes import trades, notes, search, health
+import debugpy
+
+# debugpy.listen(("0.0.0.0", 5678))
 
 app = FastAPI()
 
@@ -12,8 +16,6 @@ app.include_router(health.router, prefix="/health", tags=["health"])
 async def read_root():
     return {"message": "Welcome to the Trading Journal API"}
 
-# Run the FastAPI application
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
+    uvicorn.run(app, host="0.0.0.0", port=4000)

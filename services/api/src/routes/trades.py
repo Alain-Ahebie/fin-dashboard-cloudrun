@@ -5,12 +5,12 @@ from database import db
 
 router = APIRouter()
 
-@router.post("/{asset}/{week_start_date}", response_model=Trade)
+@router.post("/{asset}/{week_start_date}", response_model=dict)
 async def create_trade(asset: str, week_start_date: str, trade: Trade):
     try:
         trade_ref = db.collection(asset).document(week_start_date).collection("trades").document()
         trade_ref.set(trade.dict())
-        return trade
+        return {"trade_id": trade_ref.id, **trade.dict()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create trade: {str(e)}")
 
@@ -18,9 +18,17 @@ async def create_trade(asset: str, week_start_date: str, trade: Trade):
 async def get_trades(asset: str, week_start_date: str, skip: int = 0, limit: int = 10):
     try:
         trades_ref = db.collection(asset).document(week_start_date).collection("trades").offset(skip).limit(limit).stream()
-        trades = [trade.to_dict() for trade in trades_ref]
+
+        trades = []
+        for trade in trades_ref:
+            trade_data = trade.to_dict()
+            trade_data['document_id'] = trade.id
+            trades.append(Trade(**trade_data))
+
         total_count = len(trades)
+
         metadata = PaginationMetadata(total_count=total_count, skip=skip, limit=limit)
+
         return TradesResponse(trades=trades, metadata=metadata)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get trades: {str(e)}")
@@ -29,9 +37,11 @@ async def get_trades(asset: str, week_start_date: str, skip: int = 0, limit: int
 async def get_trade(asset: str, week_start_date: str, trade_id: str):
     try:
         trade_ref = db.collection(asset).document(week_start_date).collection("trades").document(trade_id).get()
-        if not trade_ref.exists:
+        if not trade_ref.exists():
             raise HTTPException(status_code=404, detail="Trade not found")
-        return trade_ref.to_dict()
+        trade_data = trade_ref.to_dict()
+        trade_data['document_id'] = trade_ref.id
+        return Trade(**trade_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get trade: {str(e)}")
 
@@ -40,7 +50,9 @@ async def update_trade(asset: str, week_start_date: str, trade_id: str, trade: T
     try:
         trade_ref = db.collection(asset).document(week_start_date).collection("trades").document(trade_id)
         trade_ref.set(trade.dict(), merge=True)
-        return trade
+        trade_data = trade.dict()
+        trade_data['document_id'] = trade_id
+        return Trade(**trade_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update trade: {str(e)}")
 
