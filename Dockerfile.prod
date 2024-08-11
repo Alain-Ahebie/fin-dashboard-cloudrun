@@ -10,10 +10,10 @@ COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the credentials file into the container
-COPY credentials/halogen-segment-241921-a28b4b66050d.json /app/credentials.json
+# COPY credentials/halogen-segment-241921-a28b4b66050d.json /app/credentials.json
 
-# Set the environment variable for Google Cloud credentials
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+# # Set the environment variable for Google Cloud credentials
+# ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
 
 # Copy source code
 COPY ./services/api/src ./src
