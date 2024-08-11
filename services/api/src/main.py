@@ -14,7 +14,7 @@ app.include_router(health.router, prefix="/health", tags=["health"])
 
 @app.get("/")
 async def read_root():
-    return {"message": "Welcome to the Trading Journal API"}
+    return {"message": "Welcome to the Trading Journal API 🚀"}
 
 if __name__ == "__main__":
     import uvicorn
